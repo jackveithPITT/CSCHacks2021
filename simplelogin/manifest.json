@@ -1,0 +1,50 @@
+{
+  "manifest_version": 2,
+  "name": "simplelogin",
+  "description": "simple login system",
+  "version": "0.0.1",
+  "content_security_policy": "default-src 'self' http://localhost:3000/; script-src 'self'; object-src 'self';",
+  "icons": {
+    "64": "icons/icon.png"
+  },
+  "permissions": [
+    "<all_urls>",
+    "tabs",
+    "activeTab",
+    "webNavigation"
+    ],
+
+  "background": {
+    "scripts": [
+      "background_script.js"
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.mozilla.org/*"
+      ],
+      "js": [
+        "content_script.js"
+      ]
+    }
+  ],
+  "browser_action": {
+    "browser_style":true,
+    "default_icon": {
+      "64": "icons/icon.png"
+    },
+    "default_popup": "browserAction/index.html",
+    "default_title": "simplelogin"
+  },
+  "page_action": {
+    "default_icon": {
+      "64": "icons/icon.png"
+    },
+    "default_popup": "pageAction/index.html",
+    "default_title": "simplelogin"
+  },
+  "options_ui": {
+    "page": "options/index.html"
+  }
+}
