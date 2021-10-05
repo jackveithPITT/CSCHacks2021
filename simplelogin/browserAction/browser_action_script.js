@@ -14,7 +14,7 @@ form.addEventListener('submit', (e)=> {
   xhr.timeout = 2000;
   let data = new FormData(form);
 
-  xhr.open("POST", "http://localhost:3000/login");
+  xhr.open("POST", "http://localhost:3000/");
 
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
   xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
