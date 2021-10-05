@@ -1,0 +1,58 @@
+@font-face {
+  font-family: Inconsolata;
+  src: url(Inconsolata/Inconsolata-VariableFont_wdth,wght.ttf);
+}
+
+h1 {
+  font-weight: bold;
+  text-align: center;
+  font-family: Inconsolata;
+}
+body {
+  color: white;
+  background-color: #333333;
+  margin: 4rem;
+
+
+}
+
+form {
+  text-align:center;
+}
+
+
+input[type="username"],input[type="password"] {
+  margin: .2rem;
+  border: solid black 2px;
+  font-family: Inconsolata;
+  padding: .4rem;
+  background-color: #444444;
+
+}
+
+input[type="submit"] {
+  margin: .2rem;
+  background-color: #404040;
+  border: solid black 2px;
+  font-family: Inconsolata;
+  font-size: 20px;
+  text-align: center;
+  transition-duration: .5s;
+}
+input[type="submit"]:hover {
+  background-color: white;
+}
+
+button {
+  background-color: #404040;
+  border: solid black 2px;
+  font-family: Inconsolata;
+  font-size: 20px;
+  text-align: center;
+  transition-duration: .5s;
+
+}
+button:hover {
+  background-color: white;
+
+}
