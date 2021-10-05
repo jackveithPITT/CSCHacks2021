@@ -8,8 +8,8 @@ var port = 3000;
 
 var connection = mysql.createConnection({
 	host     : 'localhost',
-	user     : 'root',
-	password : 'Shagg@008080',
+	user     : 'nodeuser',
+	password : 'Nodeserver420!',
 	database : 'nodelogin'
 });
 
@@ -29,7 +29,7 @@ app.get("/", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-	
+
 	res.end("hi");
 })
 
