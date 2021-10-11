@@ -11,6 +11,11 @@
   "dependencies": {
     "express": "^4.17.1",
     "express-session": "^1.17.2",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "ws": "^8.2.3"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.4",
+    "utf-8-validate": "^5.0.6"
   }
 }

@@ -1,12 +1,12 @@
-var mysql = require('mysql');
-var express = require('express');
-var session = require('express-session');
-var bodyParser = require('body-parser');
-var path = require('path');
+const mysql = require('mysql');
+const express = require('express');
+const session = require('express-session');
+const bodyParser = require('body-parser');
+const path = require('path');
 
-var port = 3000;
+const port = 3000;
 
-var connection = mysql.createConnection({
+const connection = mysql.createConnection({
 	host     : 'localhost',
 	user     : 'nodeuser',
 	password : 'Nodeserver420!',
@@ -14,6 +14,9 @@ var connection = mysql.createConnection({
 });
 
 const app = express();
+
+
+
 
 app.use(session({
 	secret: 'HEAVENORHELL',
@@ -24,6 +27,16 @@ app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
 
 app.use(express.static('css'));
+
+// Add Access Control Allow Origin headers
+/*app.use((req, res, next) => {
+  //res.setHeader("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});*/
 
 
 //REQUEST AND RESPONSE DUHHHHH
@@ -50,6 +63,11 @@ app.post('/auth', function(req, res) {
 		res.send('Please enter Username and Password!');
 		res.end();
 	}
+});
+
+app.get('/test', function(req, res) {
+	console.log("recieved req on test path.");
+	res.send("asd?");
 });
 
 app.get('/home', function(request, response) {
