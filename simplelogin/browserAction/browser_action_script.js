@@ -4,28 +4,38 @@ function reqListener () {
 }
 
 
-
 form = document.querySelector("#login-form");
 
+
+
 form.addEventListener('submit', (e)=> {
+  /*
+  var oReq = new XMLHttpRequest();
+  oReq.addEventListener("load", reqListener);
+  oReq.open("GET", "https://acbd22a1ed468afbe36d2a1bb1780d5d.m.pipedream.net");
+  oReq.send();
 
 
-  var xhr = new XMLHttpRequest();
-  xhr.timeout = 2000;
-  let data = new FormData(form);
+  const myHeaders = new Headers();
+  myHeaders.append('Access-Control-Allow-Origin','*');
+  console.log(myHeaders);
 
-  xhr.open("POST", "http://localhost:3000/");
+  const myRequest = new Request('http://localhost:3000/test', {
+    method: 'GET',
+    headers: myHeaders,
+    mode: 'cors',
+    cache: 'default',
+  });*/
 
-  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-  xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+  const myRequest = new Request('http://localhost:3000/test');
 
-  xhr.send(data);
 
-  xhr.onload = () => {
-        console.log(xhr.responseText);
-    }
 
-  xhr.ontimeout = () => {
-    console.log("asdasdasdasddddsaadds");
-  }
+
+  fetch(myRequest)
+  .then(response => response.json())
+  .then(data => console.log(data));
+
+
+
 });
