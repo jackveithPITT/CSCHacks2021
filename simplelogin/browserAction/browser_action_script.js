@@ -27,7 +27,7 @@ form.addEventListener('submit', (e)=> {
     cache: 'default',
   });*/
 
-  const myRequest = new Request('http://localhost:3000/test');
+  const myRequest = new Request('http://localhost:8080/test');
 
 
 

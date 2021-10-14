@@ -2,9 +2,33 @@ const mysql = require('mysql');
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
+const WebSocket = require('ws');
 const path = require('path');
 
 const port = 3000;
+
+
+
+
+
+const wss = new WebSocket.Server({ port: 8080 });
+
+let sockets = [];
+
+wss.on('connection', function connection(ws) {
+	sockets.push(ws);
+  ws.on('message', function incoming(message) {
+    console.log('received: %s', message);
+  });
+
+  ws.send('something');
+
+	ws.on('close', function() {
+    sockets = sockets.filter(s => s !== ws);
+	});
+});
+
+
 
 const connection = mysql.createConnection({
 	host     : 'localhost',
@@ -81,4 +105,4 @@ app.get('/home', function(request, response) {
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
-})
+});

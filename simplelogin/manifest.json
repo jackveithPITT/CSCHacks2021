@@ -3,7 +3,7 @@
   "name": "simplelogin",
   "description": "simple login system",
   "version": "0.0.1",
-  "content_security_policy": "default-src 'self' http://localhost:3000/ http://example.com/movies.json; script-src 'self'; object-src 'self';",
+  "content_security_policy": "default-src 'self' ws://localhost:8080/test http://localhost:3000/; script-src 'self'; object-src 'self';",
   "icons": {
     "64": "icons/icon.png"
   },
