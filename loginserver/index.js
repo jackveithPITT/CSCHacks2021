@@ -6,12 +6,12 @@ const WebSocket = require('ws');
 const path = require('path');
 
 const port = 3000;
+const WSPort = 80;
 
 
 
 
-
-const wss = new WebSocket.Server({ port: 8080 });
+const wss = new WebSocket.Server({ port: WSPort });
 
 let sockets = [];
 
@@ -30,7 +30,7 @@ wss.on('connection', function connection(ws) {
 
 
 
-const connection = mysql.createConnection({
+const sqlconnection = mysql.createConnection({
 	host     : 'localhost',
 	user     : 'nodeuser',
 	password : 'Nodeserver420!',
