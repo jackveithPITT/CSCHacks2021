@@ -1,5 +1,5 @@
 # CSCHacks 2021 Devlog
-I will attempt to detail all of (or at least the most major/headache-inducing/time-consuming) roadblocks in this document, so that I can track my progress and hopefully accurately detail the things that got in my way and what I had to learn to solve these issues.
+I will attempt to detail all of (or at least the most major/headache-inducing/time-consuming) my roadblocks in this document, as well as what I worked on each day so that I can track my progress and hopefully accurately detail the things that got in my way and what I had to learn to solve these issues. I'll also include some neat things I learned or had trouble with that I didn't want to bore the readers with at the bottom of each section.
 
 # Project Creation through Oct 15, 2021
 
@@ -29,5 +29,14 @@ I wanted to get a connection started between the Extension in the browser and th
  ### SSL Signing
  today began with me attempting to figure out why I was getting errors when trying to push my project to the main branch of my github repo. Learned a few things about fetching, pulling etc. and was able to fix my non-fast-forward issue. This is the first project where I am extensively using git from the command line (or at all for that matter) so its nice to be able to understand more about this useful version control system. Now that I'm able to establish a websocket connection in the first place, I'm going to make sure that its secure using Secure Sockets Layer (SSL) by generating a self-signed certificate using openSSL's tools. This lets me run my entire server over HTTPS, which is more secure than HTTP. I ran into some issues getting this to work, but it turned out to be a silly mistake where I didn't actually tell the server what the certificate passphrase was. Now I can securely transfer data with my fetch requests and websockets.
 
+ cool stuff:
+ - certificate authorities and self signing
+ - multiple connections sharing a ports
+ - pass express app to HTTPS server
+
  ### Script Communication
  I was also able to use the messaging API provided by Firefox extensions in order to establish a connection between my BAS (Browser Action Script) and BS (Background Script). I might inevitably need to do this again in the future between the CS (Content Script), the script which is run on the individual tabs and pages loaded in the browser, and the BS. I might need it to be able to process information about the tabs ( specifically the URL) in order to determine URL uniqueness. However the BS might be able to do this on its own; this is a problem for a later date. Now that the BAS and the BS are hooked up, I will be able to use events from the Browser Action's HTML page to query resources from the server. For now I was only able to do some dummy `fetch()` calls to make sure that the client and server responded correctly; my plan for the future is to use a fetch request to log in the User, then establish a secure websocket connection to the server for a more privileged User.
+
+ cool stuff:
+ - `TypeError: Network Error` (fun and enjoyable and useful error message :D)
+ - HTTPS headers and HTTP request payloads
