@@ -3,7 +3,7 @@
   "name": "simplelogin",
   "description": "simple login system",
   "version": "0.0.1",
-  "content_security_policy": "default-src 'self' wss://localhost:80/ http://localhost:3000/; script-src 'self'; object-src 'self';",
+  "content_security_policy": "default-src 'self' wss://localhost:80/ https://localhost:80/; script-src 'self'; object-src 'self';",
   "icons": {
     "64": "icons/icon.png"
   },
@@ -12,7 +12,7 @@
     "tabs",
     "activeTab",
     "webNavigation",
-    "http://localhost/*"
+    "https://localhost:80/*"
     ],
 
   "background": {

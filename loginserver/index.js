@@ -1,19 +1,51 @@
 const mysql = require('mysql');
 const express = require('express');
 const session = require('express-session');
+const fs = require('fs');
 const bodyParser = require('body-parser');
 const WebSocket = require('ws');
 const path = require('path');
+const https = require('https');
 
-const port = 3000;
+const port = 80;
 const WSPort = 80;
 
 
+const options = {
+  key: fs.readFileSync('cert/key.pem'),
+  cert: fs.readFileSync('cert/cert.pem'),
+	passphrase: "SSLphraseLOL420!"
+};
 
-
-const wss = new WebSocket.Server({ port: WSPort });
 
 let sockets = [];
+
+
+
+
+
+
+
+
+
+
+
+
+const app = express();
+
+const server = https.createServer(options, app);
+
+const wss = new WebSocket.Server({ server: server });
+
+const sqlconnection = mysql.createConnection({
+	host     : 'localhost',
+	user     : 'nodeuser',
+	password : 'Nodeserver420!',
+	database : 'nodelogin'
+});
+
+
+
 
 wss.on('connection', function connection(ws) {
 	sockets.push(ws);
@@ -30,27 +62,22 @@ wss.on('connection', function connection(ws) {
 
 
 
-const sqlconnection = mysql.createConnection({
-	host     : 'localhost',
-	user     : 'nodeuser',
-	password : 'Nodeserver420!',
-	database : 'nodelogin'
-});
-
-const app = express();
 
 
 
+
+app.use(express.static('css'));
 
 app.use(session({
 	secret: 'HEAVENORHELL',
 	resave: true,
 	saveUninitialized: true
 }));
+
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
 
-app.use(express.static('css'));
+
 
 // Add Access Control Allow Origin headers
 /*app.use((req, res, next) => {
@@ -70,14 +97,18 @@ app.get('/', function(req, res) {
 });
 
 app.post('/auth', function(req, res) {
+	console.log(req);
 	let username = req.body.username;
 	let password = req.body.password;
 	if (username && password) {
-		connection.query('SELECT * FROM accounts WHERE username = ? AND password = ?', [username, password], function(error, results, fields) {
+		console.log(username + ", " + password);
+		sqlconnection.query('SELECT * FROM accounts WHERE username = ? AND password = ?', [username, password], function(error, results, fields) {
 			if (results.length > 0) {
 				req.session.loggedin = true;
 				req.session.username = username;
-				res.redirect('/home');
+
+				res.json({message: "res json on auth"});
+				//res.redirect('/home');
 			} else {
 				res.send('Incorrect Username and/or Password!');
 			}
@@ -90,8 +121,9 @@ app.post('/auth', function(req, res) {
 });
 
 app.get('/test', function(req, res) {
-	console.log("recieved req on test path.");
-	res.send("asd?");
+	/*console.log("recieved req on test path.");
+	res.send("asd?");*/
+	res.json({message: "res json on test"});
 });
 
 app.get('/home', function(request, response) {
@@ -103,6 +135,6 @@ app.get('/home', function(request, response) {
 	response.end();
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+server.listen(port, () => {
+  console.log(`Example app listening at https://localhost:${port}`)
 });

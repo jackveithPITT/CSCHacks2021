@@ -1,11 +1,11 @@
 // Put all the javascript code here, that you want to execute in background.
 
-const port = 3000;
+const port = 80;
 const WSPort = 80;
 
 ///////////////////////////////////////////////////////////////////////////////
 //websocket shit
-
+browser.runtime.onConnect.addListener(connected);
 
 let ports = {};
 
@@ -18,6 +18,11 @@ client.addEventListener('message', msg => {
 
 
 
+
+
+
+
+
 ///////////////////////////////////////////////////////////////////////////////
 //connection to Browser Script
 
@@ -25,11 +30,37 @@ function connected (p) {
   if (p.name === "BASConnection") {
     ports[p.name] = p;
     ports[p.name].onMessage.addListener(handleBASMessage);
+    console.log("port added");
   }
 }
-browser.runtime.onConnect.addListener(connected);
 
-function handleBASMessage() {
+
+function handleBASMessage(message, sender) {
+
+  let ev = message.event;
+
+
+
+  if (ev === "login") {
+
+    let myHeaders = new Headers();
+    //myHeaders.append('Access-Control-Allow-Origin','*');
+    //console.log(myHeaders);
+
+    const myRequest = new Request(`https://localhost:${port}/auth`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      mode: 'cors',
+      cache: 'default',
+      body: JSON.stringify(message.data)
+    });
+
+    fetch(myRequest)
+      .then(response => response.json())
+      .then(data => console.log(data));
+  }
 
 }
 
@@ -41,8 +72,8 @@ function sendTest() {
   //myHeaders.append('Access-Control-Allow-Origin','*');
   //console.log(myHeaders);
 
-  const myRequest = new Request(`http://localhost:${port}/test`, {
-    method: 'GET',
+  const myRequest = new Request(`https://localhost:${port}/auth`, {
+    method: 'POST',
     headers: myHeaders,
     mode: 'cors',
     cache: 'default',
@@ -56,4 +87,4 @@ function sendTest() {
   .then(data => console.log(data));
 }
 
-sendTest();
+//sendTest();
