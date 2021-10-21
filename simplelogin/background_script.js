@@ -46,7 +46,7 @@ function handleBASMessage(message, sender) {
     let myHeaders = new Headers();
     //myHeaders.append('Access-Control-Allow-Origin','*');
     //console.log(myHeaders);
-
+    console.log("cug");
     const myRequest = new Request(`https://localhost:${port}/auth`, {
       method: 'POST',
       headers: {
@@ -56,6 +56,7 @@ function handleBASMessage(message, sender) {
       cache: 'default',
       body: JSON.stringify(message.data)
     });
+
 
     fetch(myRequest)
       .then(response => response.json())
@@ -76,7 +77,7 @@ function sendTest() {
     method: 'POST',
     headers: myHeaders,
     mode: 'cors',
-    cache: 'default',
+    cache: 'default'
   });
 
 

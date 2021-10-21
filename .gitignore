@@ -2,7 +2,5 @@ loginserver/node_modules/
 
 loginserver/*.json
 
-old ssl cert/
 
-loginserver/cert/key.pem
-loginserver/cert/cert.pem
+loginserver/cert/

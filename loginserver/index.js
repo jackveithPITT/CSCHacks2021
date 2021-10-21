@@ -4,6 +4,7 @@ const session = require('express-session');
 const fs = require('fs');
 const bodyParser = require('body-parser');
 const WebSocket = require('ws');
+const { MongoClient } = require("mongodb");
 const path = require('path');
 const https = require('https');
 
@@ -21,7 +22,9 @@ const options = {
 let sockets = [];
 
 
+const mongoURI = "mongodb+srv://nodeServerUser:NodeserverLOL420!@pkmncluster.izgjf.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 
+const mclient = new MongoClient(mongoURI);
 
 
 
