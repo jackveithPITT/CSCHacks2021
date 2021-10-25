@@ -4,3 +4,5 @@ loginserver/*.json
 
 
 loginserver/cert/
+
+# put images back after downloading on laptop

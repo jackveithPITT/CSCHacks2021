@@ -40,3 +40,31 @@ I wanted to get a connection started between the Extension in the browser and th
  cool stuff:
  - `TypeError: Network Error` (fun and enjoyable and useful error message :D)
  - HTTPS headers and HTTP request payloads
+
+ #Oct 21-22, 2021
+ ### sessions and databases
+ ugh, big midterm week so not much time to work on this. Anyways, These few days were about switching databases and logging in. I decided to switch to MongoDB from mySQL because of a few reasons, most notably that I wanted have the data in the cloud so that I can work from various machines using the same dataset. I was also reminded of how convenient it is work with simple JSON objects (shoutout to Mike). I took a bit more of a thorough glance at the `express-session` documentation because I wanted to be able to have a persistent user session so a User wouldn't have to login every time they close and reopen the extension popup. Turns out the implementation was simpler than I thought it would be, simply a case of whether a variable I define in the session is true, by attaching the `loggedin` attribute to the session object. The `loggedin` attribute will only exist if the session (whose lifespan is the same as the browser session) has authenticated with username and password. I have a table in my MongoDB database that holds username and hashed passwords combinations, along with some other info.
+
+### Hashing and async
+In order to hash the passwords to a sufficient degree, I used the npm package `bcrypt`, which makes hashing and comparing passwords quite simple. So now, if the user already has a loggedin session, great, they can proceed. If they don't, they are asked to provide legitimate credentials, which are compared against data pulled from the cloud, authenticating the user if the username and password match. Ran into some issues with asynchronous function calls, but luckily the bcrypt functionality is able to be called asynchronously; the method of returning a Promise wasn't functioning properly when combined with opening a connection to the MongoDB cluster. I took a bit of time to educate myself on asynchronous function calls, as they are relevant in many niches of computer science, and Promises, which are integral to using web based javascript.
+
+ - express sessions
+ - TLS and password security
+ - databases and hashing
+ - Promises and asynchronous functions in JS
+
+ # Oct 23, 2021
+ ### getting files from the server
+ right now I'm putting off getting the dynamic HTML of the popup working because I know its going to be a challenge and I might as well get other functions working beforehand anyways. The most important is probably the querying of server resources like images that I will potentially save locally depending on whether the User needs them or not; if a file is most likely going to be used more than a few times then I would rather it be stored Client side as opposed to having to send a request each time. This might actually be overkill for the time being - I wrote a quick python script (and looked up every function because I never use python) to download the HG/SS sprites as well as their current generation icons of the original 151 pokemon  from pokemondb. these 252 files take up only 193 KB in total, which is a really negligible amount of space overhead. I plan on doing it as a proof of concept however, as the functionality might be necessary in the future and I might as well do it now for reference. I worked on cleaning up the connection between the Browser Action Script and the Background Script as well. The BAS connects  only once to BS in order to convey its desire for authentication, but in the future it will also query for resources stored in the BS.
+
+ - python image scraping
+ - how many ways I can't implement dynamic html how I want
+ - querying and posting data to mongodb
+
+ #Oct 24, 2021
+ ### dynamic HTML
+ although I said I'd put off working on the dynamic HTML, an idea came to me and after a bit of investigating a solution had been found. So this is the HTML episode now. As far as my research could tell, there is no way to directly change the entire HTML document being displayed by an application; this feature would make my life very easy per the fact that I have a few HTML pages I would like to manipulate to display varying kinds of information to the User. The workaround that I found makes use of iframes: an HTML element that allows one to display a full HTML page inside of another document, and the hidden keyword in HTML tags. the hidden keyword can be toggled on and off using the BAS and makes it seem as if the HTML element that's hidden doesn't even exist. I can put each of the (currently 4) separate HTML documents into their own iframes, and show/hide them as needed in order to display different screens such as the login and signup screens, and the 2 game screens. In all honesty, I have absolutely no clue how jank this approach is, but I'm sure it can't be that bad. :). At this point I am running low on time and cant afford to spend too long on issues like this. Along with figuring out the specifics of implementing this design, I was able to add a few more event listeners to the elements of the pages so that the autologin feature works correctly and one can flick between the sign up and login screens at will. The only large issue presenting itself right now is that sometimes the Frames aren't defined when I need them to be, such as when I'm receiving the username and uuid of a User from the database. I will work on fixing these this week, as well as finally programming the game logic. Oh, and the extension has a neat little icon now.
+
+  - iframes, hidden, listeners, much more HTML
+  - HTML events and their different use cases
+  - CSS properties
