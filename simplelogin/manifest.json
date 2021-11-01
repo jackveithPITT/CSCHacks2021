@@ -36,7 +36,7 @@
       "64": "icons/icon.png"
     },
     "default_popup": "browserAction/index.html",
-    "default_title": "simplelogin"
+    "default_title": "PKMN"
   },
   "page_action": {
     "default_icon": {

@@ -1,7 +1,13 @@
 @font-face {
   font-family: Inconsolata;
-  src: url(Inconsolata/Inconsolata-VariableFont_wdth,wght.ttf);
+  src: url(fonts/Inconsolata/Inconsolata-VariableFont_wdth,wght.ttf);
 }
+
+@font-face {
+  font-family: pokemonGB;
+  src: url(fonts/PokemonGB/PokemonGb-RAeo.ttf);
+}
+
 
 .wrapper {
   text-align: center;
@@ -22,6 +28,12 @@ h1 {
   text-align: center;
   font-family: Inconsolata;
 }
+
+h3 {
+  text-align: center;
+  font-family: Inconsolata;
+}
+
 body {
   color: white;
   background-color: #333333;
@@ -31,7 +43,7 @@ body {
 }
 
 form {
-  text-align:center;
+  text-align: center;
 }
 
 
@@ -72,8 +84,8 @@ button:hover {
 
 }
 
-#signupFrame {
-  background: #BBBBBB;
+#SIGNUPBODY {
+
 }
 
 .underlined {
@@ -82,4 +94,22 @@ button:hover {
   font-family: Inconsolata;
   cursor: pointer;
 
+}
+
+.bottomaligneddiv {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+}
+
+.gamebutton {
+  /*margin-left: 2%;
+  margin-right: 2%;*/
+  margin-bottom: 10%;
+  padding-left: 2%;
+  padding-right: 2%;
+}
+
+#signuperror {
+  color: #fc6464;
 }

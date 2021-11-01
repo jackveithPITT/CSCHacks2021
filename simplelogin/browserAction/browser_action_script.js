@@ -1,12 +1,13 @@
 
 //connect to BAS for this popup session
 
-let username = "prev";
+let pokemon = [];
+
 let uuid = null;
 
 
 let BASPort = browser.runtime.connect({
-  name: "BASConnection"
+  name: "BAS"
 });
 
 BASPort.onMessage.addListener(handleBSMessage);
@@ -37,12 +38,15 @@ document.addEventListener('DOMContentLoaded', function(event) {
 let frames = {
   loginFrame:  document.querySelector('#loginFrame'),
   signupFrame: document.querySelector('#signupFrame'),
-  homeFrame: document.querySelector('#homeFrame')
+  homeFrame: document.querySelector('#homeFrame'),
+  boxFrame: document.querySelector('#boxFrame')
 }
 let loginFrameDocument = loginFrame.contentWindow.document;
-if (loginFrameDocument) {console.log(loginFrameDocument);}
 loginFrame.onload = () => {
 
+  //not sure if this is necessary. in fact i believe it isnt but im not sure
+  //so i dont want to remove it but i believe that all the frames might load in simultaneously
+  //so checking one is like checking all of them
   retbool = true;
   for (var frame in frames) {
     retbool = retbool && frame;
@@ -52,7 +56,11 @@ if (retbool) {
   loginFrameDocument = loginFrame.contentWindow.document;
   signupFrameDocument = signupFrame.contentWindow.document;
   homeFrameDocument = homeFrame.contentWindow.document;
+  boxFrameDocument = boxFrame.contentWindow.document;
 
+
+  //////////////////////////////////////////////////////////////////////////////
+  //LOGINFRAME
 
   //console.log(loginFrameDocument.querySelector('#logininpbtn'));
   loginFrameDocument.querySelector('.underlined').addEventListener('click', function (event) {
@@ -63,8 +71,8 @@ if (retbool) {
   loginFrameDocument.querySelector("#logininpbtn").addEventListener('click', (e)=> {
 
     var postReq = BASPort.postMessage({
-      event: "login",
-      data: {
+      "event": "login",
+      "data": {
         username: loginFrameDocument.querySelector("#loginusername").value,
         password: loginFrameDocument.querySelector("#loginpassword").value
       }
@@ -74,11 +82,59 @@ if (retbool) {
 
   });
 
+  //////////////////////////////////////////////////////////////////////////////
+  //SIGNUPFRAME
   signupFrameDocument.querySelector(".underlined").addEventListener('click', function (event) {
     swapFrames(loginFrame, signupFrame);
   });
+  signupFrameDocument.querySelector("#signupbtn").addEventListener('click', function (event) {
 
-  homeFrameDocument.querySelector("#homeusername").textContent = username;
+    let signupUsername = signupFrameDocument.querySelector("#signupusername").value;
+    let signupPassword = signupFrameDocument.querySelector("#signuppassword").value;
+    let signupEmail    = signupFrameDocument.querySelector("#signupemail")   .value;
+
+    if (signupUsername.length >= 3) {
+
+      BASPort.postMessage({
+        "event": "signup",
+        "data": {
+          username: signupUsername,
+          password: signupPassword,
+          email:    signupEmail
+        }
+      });
+
+    }
+
+  });
+
+
+
+
+  //////////////////////////////////////////////////////////////////////////////
+  //HOMEFRAME
+
+  homeFrameDocument.querySelector("#boxbutton").addEventListener('click', function (event) {
+    swapFrames(boxFrame, homeFrame);
+
+  });
+
+  homeFrameDocument.querySelector("#encounterbutton").addEventListener('click', function (event) {
+    BASPort.postMessage({
+      "event": "PKMNEncounter",
+      "data": {
+
+      }
+    });
+
+  });
+
+  //////////////////////////////////////////////////////////////////////////////
+  //BOXFRAME
+  boxFrameDocument.querySelector("#homebutton").addEventListener('click', function (event) {
+    swapFrames(homeFrame, boxFrame);
+
+  });
 
 
 }};
@@ -91,41 +147,64 @@ function swapFrames(frame1, frame2) {
   frame2.hidden = true;
 }
 
-//console.log(loginFrame.contentWindow.document);
-
-
-
-//console.log(loginFrame);
-
-//console.log(loginFrame.contentWindow.document.querySelector('form'));
-
 function handleBSMessage(message, sender) {
 
   let ev = message.event;
 
-  if (message.event === "loginsuccess") {
+  if (ev === "loginsuccess") {
 
+    username = message.data.username;
+    homeFrameDocument.querySelector("#homeusername").textContent = username;
 
-    retbool = true;
-    for (var frame in frames) {
-      retbool = retbool && frame;
-    }
-    console.log(retbool);
-    if (true) {
-      console.log(message);
-      username = message.username;
-      homeFrameDocument.querySelector("#homeusername").textContent = username;
-      uuid = message.uuid;
-      homeFrameDocument.querySelector("#homeuuid").textContent = uuid;
-    }
+    BASPort.postMessage({
+      event: "PKMNAccess",
+      data: {
+      }
+    });
 
-
-
-    //loginFrame.querySelector("#time").textContent = "login success";
     swapFrames(homeFrame, loginFrame);
   }
 
-  console.log(message);
+  else if (ev === "loginfailure") {
+
+  }
+
+  else if (ev === "signupsuccess") {
+    console.log(message);
+    username = message.data.username;
+    homeFrameDocument.querySelector("#homeusername").textContent = username;
+
+    swapFrames(homeFrame, signupFrame);
+
+  }
+
+  else if (ev === "signupfailure") {
+    let er = message.data.error;
+    signupFrameDocument.querySelector("#signuperror").textcontent = er;
+  }
+
+  else if (ev === "PKMNAccessSuccess") {
+    pokemon = message.data.pokemon;
+
+    for (let i = 0; i < pokemon.length; i++) {
+      let srcstring = "./images/" + pokemon[i].name + "-icon.png";
+      boxFrameDocument.querySelector(`#box${i}`).src = srcstring;
+    }
+
+    let homepokemonsrc = "./images/" + pokemon[0].name + ".png";
+    homeFrameDocument.querySelector("#homepokemon").src = homepokemonsrc;
+  }
+
+  else if (ev === "PKMNPccessSuccess") {
+    pokemon = message.data.pokemon;
+
+    for (let i = 0; i < pokemon.length; i++) {
+      let srcstring = "./images/" + pokemon[i].name + "-icon.png";
+      boxFrameDocument.querySelector(`#box${i}`).src = srcstring;
+    }
+  }
+
+
 }
 
 
