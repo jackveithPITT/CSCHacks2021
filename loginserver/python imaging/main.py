@@ -11,7 +11,7 @@ import requests
 import os
 
 url = "https://img.pokemondb.net/sprites/heartgold-soulsilver/normal/"
-url = "https://img.pokemondb.net/sprites/sword-shield/icon/"
+url2 = "https://img.pokemondb.net/sprites/sword-shield/icon/"
 j = []
 with open("./data/pokemon.json", encoding='utf-8') as f:
     j = json.load(f)
@@ -29,11 +29,16 @@ png = ".png"
 for i in range(151):
 
     name = (j[i]['name']).lower()
+    name = name.replace("\'", "")
+    name = name.replace(" ", "-")
+    name = name.replace(".", "")
+    name = name.replace("♂", "-m")
+    name = name.replace("♀", "-f")
 
 
 
     r = requests.get(url + name + png)
     print (url + name + png)
 
-    with open("./images/" + name + "-icon" + png, "wb") as f:
+    with open("./images/" + name + png, "wb") as f:
         f.write(r.content)

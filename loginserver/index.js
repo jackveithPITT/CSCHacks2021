@@ -286,7 +286,7 @@ wss.on('connection', function connection(ws) {
         "nickname": pokemondata[pkmndex].name
       }
 
-      if(postPKMNtoUUID(uuid, pokemon)) {
+      if(await postPKMNtoUUID(uuid, pokemon)) {
         let pokemonarray = await getUserPKMN(uuid);
         ws.send(JSON.stringify({
           "event": "PKMNPostSuccess",

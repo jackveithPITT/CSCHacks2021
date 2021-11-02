@@ -8,8 +8,15 @@
   src: url(fonts/PokemonGB/PokemonGb-RAeo.ttf);
 }
 
+@font-face {
+  font-family: pkfontDS;
+  src: url(fonts/pkfontDS/pkmndp.ttf);
+}
+
 
 .wrapper {
+  display: flex;
+  justify-content: center;
   text-align: center;
 }
 
@@ -70,13 +77,13 @@ input[type="submit"]:hover {
 }
 
 button {
-  background-color: #404040;
+  background-color: #606060;
   border: solid black 2px;
   text-align: center;
   font-family: Inconsolata;
   font-size: 20px;
   text-align: center;
-  transition-duration: .5s;
+  transition-duration: .25s;
 
 }
 button:hover {
@@ -103,8 +110,8 @@ button:hover {
 }
 
 .gamebutton {
-  /*margin-left: 2%;
-  margin-right: 2%;*/
+  margin-left: 2%;
+  margin-right: 2%;
   margin-bottom: 10%;
   padding-left: 2%;
   padding-right: 2%;
@@ -112,4 +119,26 @@ button:hover {
 
 #signuperror {
   color: #fc6464;
+}
+
+#boxdiv {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  width: 80%;
+  padding: 0;
+  margin: 0;
+}
+
+.gamefont {
+  font-weight: normal;
+  font-family: pkfontDS;
+}
+
+.activebutton {
+  background-color: #fcc96a;
+}
+
+.activebutton:hover {
+  background-color: #fcc96a;
 }

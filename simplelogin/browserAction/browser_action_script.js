@@ -119,13 +119,15 @@ if (retbool) {
 
   });
 
-  homeFrameDocument.querySelector("#encounterbutton").addEventListener('click', function (event) {
+  homeFrameDocument.querySelector("#catchbutton").addEventListener('click', function (event) {
     BASPort.postMessage({
       "event": "PKMNEncounter",
       "data": {
 
       }
     });
+
+
 
   });
 
@@ -186,20 +188,20 @@ function handleBSMessage(message, sender) {
   else if (ev === "PKMNAccessSuccess") {
     pokemon = message.data.pokemon;
 
-    for (let i = 0; i < pokemon.length; i++) {
-      let srcstring = "./images/" + pokemon[i].name + "-icon.png";
+    for (let i = 0; i < Math.min(pokemon.length, 12); i++) {
+      let srcstring = "./images/" + filterPokemonName(pokemon[i].name) + "-icon.png";
       boxFrameDocument.querySelector(`#box${i}`).src = srcstring;
     }
 
-    let homepokemonsrc = "./images/" + pokemon[0].name + ".png";
+    let homepokemonsrc = "./images/" + filterPokemonName(pokemon[0].name) + ".png";
     homeFrameDocument.querySelector("#homepokemon").src = homepokemonsrc;
   }
 
-  else if (ev === "PKMNPccessSuccess") {
+  else if (ev === "PKMNPostSuccess") {
     pokemon = message.data.pokemon;
 
-    for (let i = 0; i < pokemon.length; i++) {
-      let srcstring = "./images/" + pokemon[i].name + "-icon.png";
+    for (let i = 0; i < Math.min(pokemon.length, 12); i++) {
+      let srcstring = "./images/" + filterPokemonName(pokemon[i].name) + "-icon.png";
       boxFrameDocument.querySelector(`#box${i}`).src = srcstring;
     }
   }
@@ -207,12 +209,17 @@ function handleBSMessage(message, sender) {
 
 }
 
-
-
-
-//save the form as a variable to access user and pass
-form = loginFrame.querySelector("#login-form");
-
 function reqListener () {
   console.log(this.responseText);
+}
+
+function filterPokemonName(name) {
+  name = name.toLowerCase()
+  .replace("\'", "")
+  .replace(".","")
+  .replace( " ","-")
+  .replace("♂","-m")
+  .replace("♀","-f");
+
+  return name;
 }
