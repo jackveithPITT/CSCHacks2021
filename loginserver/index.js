@@ -34,12 +34,17 @@ const server = https.createServer(options, app);
 app.use(express.static('css'));
 app.use(express.static('images'));
 app.use(session({
-	secret: 'HEAVENORHELL',
-	resave: true,
-	saveUninitialized: true,
-  store: MongoStore.create({
-    mongoUrl: mongoURI,
-    dbName: 'Sessions'
+	"secret": 'HEAVENORHELL',
+	"resave": true,
+	"saveUninitialized": true,
+  "cookie": {
+    "maxAge": 1000 * 60 * 60 * 24 //60 seconds by 60 minutes by 24 hours by 1000 ms
+  },
+  "unset": "destroy",
+  "rolling": true,
+  "store": MongoStore.create({
+    "mongoUrl": mongoURI,
+    "dbName": 'Sessions'
   })
 }));
 app.use(bodyParser.urlencoded({extended : true}));
@@ -126,6 +131,12 @@ async function postNewUser(username, password, email) {
       userObject = { uuid: uuid, username: username, password: hash, email: email };
 
       await users.insertOne(userObject);
+
+      db = mclient.db("userData");
+      let pkmn = db.collection("pkmn");
+      let pkmnObject = { "uuid": uuid, "pokemon": [] };
+
+      await pkmn.insertOne(pkmnObject);
 
   } catch (err) {
       console.log(err.stack);
@@ -255,6 +266,9 @@ wss.on('connection', function connection(ws) {
     "event": "connectionsuccess"
   }));
 
+
+  /////////////////////////////////////////////////////////////////////////////
+  //websocket event handlers
   ws.on('message', async function (msg) {
     //console.log('received: %s', message);
     message = JSON.parse(msg);
@@ -328,9 +342,7 @@ function sendWSError(ws, error) {
   next();
 });*/
 
-
-//REQUEST AND RESPONSE DUHHHHH
-
+//APP ROUTES
 app.post('/signup', async function(req, res) {
 
   let username = req.body.data.username;
@@ -339,58 +351,89 @@ app.post('/signup', async function(req, res) {
 
   if(await isUserTaken(username) == null) {
     let userObject = await postNewUser(username, password, email);
+    let uuid = await getUUIDbyUsername(username);
+    await postPKMNtoUUID(uuid, {
+      "pokedex_number": 24,
+      "name": pokemondata[24].name,
+      "nickname": pokemondata[24].name
+    });
 
+    req.session.loggedin = true;
+    req.session.username = username;
+    req.session.uuid = uuid;
     res.json({
-      "event": "signupsuccess",
-      "loggedin": true,
+      "event": "signupSuccess",
       "data": {
+        "loggedin": true,
         "username": username,
         "uuid": userObject.uuid
-
       }
     });
   }
   else {
+    req.session.loggedin = false;
     res.json({
-      "event": "signupfailure",
+      "event": "signupFailure",
       "data": {
         "error": "username already exists!"
       }
     });
   }
-
-
-
-
-
 });
 
 
 
 app.post('/auth', async function(req, res) {
 
+  if (req.body.event === "logout") {
+    req.session.loggedin = false;
+    res.json({
+      "event": "logoutSuccess",
+      "data": {
+        "message": "successful logout on auth",
+        "loggedin": false
+      }
+    });
+  }
+
   let username = req.body.data.username;
 	let password = req.body.data.password;
   let uuid = null;
 
-  //change this back! dont not (!)
-	if(req.session.loggedin) {
-
+  console.log(req.session);
+  //if the session is already logged in (i.e. credentials have been previously
+  // provided and the session has not been destroyed) then simply autolog.
+	if(req.session.loggedin == true) {
+    req.session.loggedin = true;
     res.json({
-      "message": "successful autologin on auth",
-      "loggedin": true,
+      "event": "loginSuccess",
       "data": {
+        "message": "successful autologin on auth",
+        "loggedin": true,
         "username": req.session.username,
         "uuid": req.session.uuid
       }
-
     });
-
 
   }
 
-	else if (username && password) {
+  //check if session has attempted a login  previously; if loggedin == null
+  //then it hasnt and thus is a new autologin. set loggedin to false to allow
+  //future log in attempts with credentials.
+  else if (req.session.loggedin == null) {
+    req.session.loggedin = false;
+    res.json({
+      "event": "loginFailure",
+      "data": {
+        "loggedin": false
+        //"error": "session logged out"
+      }
+    });
+  }
 
+  //arbitrary check as any existing session with loggedin == false will be a
+  //login attempt with existing credentials guaranteed by the client.
+	else if (username && password) {
     let valid = await runLoginQuery(username, password);
     //console.log(await runLoginQuery(username, password));
 
@@ -401,30 +444,45 @@ app.post('/auth', async function(req, res) {
       //TODO: fix getting the UUID (returns null or something because async (probably))
       req.session.uuid = await getUUIDbyUsername(username);
 
-      res.json({ "loggedin": true,
+      res.json({
+        "event": "loginSuccess",
         "data": {
+          "loggedin": true,
+          "message": "successful login on auth",
           "username": req.session.username,
           "uuid": req.session.uuid
-        },
-        "message": "successful login on auth"
+        }
       });
+
     } else {
-      res.json({ "loggedin": false,
-        "message":'Incorrect Credentials!'
+      req.session.loggedin = false;
+      res.json({
+        "event": "loginFailure",
+        "data": {
+          "loggedin": false,
+          "error":'incorrect username or password.'
+        }
       });
     }
 
+  //this should never be reached, but exists just in case I guess. catches a null
+  //username or password.
 	} else {
-		res.json({ "loggedin": false,
-      "message":'Please enter Username and Password!'
+    req.loggedin = false;
+		res.json({
+      "event": "loginFailure",
+      "data": {
+        "loggedin": false
+        //"error":'null username or password.'
+      }
+
     });
 		res.end();
 	}
 });
 
 app.get('/test', function(req, res) {
-	/*console.log("recieved req on test path.");
-	res.send("asd?");*/
+	console.log("recieved req on test path.");
 	res.json({message: "res json on test"});
 });
 

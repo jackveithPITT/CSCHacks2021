@@ -12,10 +12,21 @@ let session = {
 
 let userpkmn = [];
 
-///////////////////////////////////////////////////////////////////////////////
-//websocket shit
+//TODO: establish websockets only for privileged users
+let client = new WebSocket(`wss://localhost:${WSPort}/test`);
 
+////////////////////////////////////////////////////////////////////////////////
+//set up script ports
 browser.runtime.onConnect.addListener(connected);
+
+function connected (p) {
+  if (p.name === "BAS") {
+    ports[p.name] = p;
+    ports[p.name].onMessage.addListener(handleBASMessage);
+  }
+  else if (p.name === "CS") {
+  }
+}
 
 //client sending request
 function wrapper() {
@@ -26,7 +37,9 @@ function wrapper() {
 
 
 
-let client = new WebSocket(`wss://localhost:${WSPort}/test`);
+////////////////////////////////////////////////////////////////////////////////
+//websocket shit
+
 
 client.addEventListener('message', message => {
 
@@ -43,6 +56,8 @@ client.addEventListener('message', message => {
   else if (msg.event === "PKMNAccessSuccess") {
     userpkmn = msg.data;
 
+    console.log("post BAS pkmnaccesssuccess");
+
     ports['BAS'].postMessage({
       "event": "PKMNAccessSuccess",
       "data": {
@@ -54,6 +69,8 @@ client.addEventListener('message', message => {
 
   else if (msg.event === "PKMNPostSuccess") {
     userpkmn = msg.data;
+
+    console.log("post BAS pkmnpostsuccess");
 
     ports['BAS'].postMessage({
       "event": "PKMNPostSuccess",
@@ -67,18 +84,7 @@ client.addEventListener('message', message => {
 
 });
 
-function connected (p) {
-  if (p.name === "BAS") {
-    ports[p.name] = p;
-    ports[p.name].onMessage.addListener(handleBASMessage);
 
-    //console.log("port added");
-  }
-
-  else if (p.name === "CS") {
-
-  }
-}
 
 
 
@@ -86,10 +92,7 @@ function connected (p) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-//connection to Browser Script
-
-
-
+//BrowserSCript events
 
 function handleBASMessage(message, sender) {
 
@@ -105,25 +108,59 @@ function handleBASMessage(message, sender) {
 
 
   else if (ev === "login") {
-    attemptLogin({
-      "event": "login",
-      "data": {
-        "username": message.data.username,
-        "password": message.data.password
-      }
-    }, sender);
+    if (message.data.username.length != "" &&
+        message.data.password != "") {
+      attemptLogin({
+        "event": "login",
+        "data": {
+          "username": message.data.username,
+          "password": message.data.password
+        }
+      }, sender);
+    } else {
+      console.log("post BAS loginFailure");
+
+      ports['BAS'].postMessage({
+        "event": "loginFailure",
+        "data": {
+          "error": "invalid username or password."
+        }
+      });
+    }
   }
 
   else if (ev === "signup") {
-    attemptSignup(
-      message.data.username,
-      message.data.password,
-      message.data.email
-    );
+    if (message.data.username.length >= 3 &&
+        message.data.password != "" &&
+        message.data.email != "") {
+
+      attemptSignup(
+        message.data.username,
+        message.data.password,
+        message.data.email
+      );
+    } else {
+      console.log("post BAS signupfailure");
+
+      ports['BAS'].postMessage({
+        "event": "signupFailure",
+        "data": {
+          "error": "invalid input. usr.length < 3?"
+        }
+      });
+
+    }
+
+  }
+
+  else if (ev ===  "logout") {
+    attemptLogout(message, sender);
+
   }
 
   else if (ev === "PKMNAccess") {
 
+    console.log("post socket pkmnaccess");
     client.send(JSON.stringify({
       "event":"PKMNAccess",
       "data": {
@@ -135,8 +172,9 @@ function handleBASMessage(message, sender) {
   else if (ev === "PKMNEncounter") {
     console.log("encounter!");
 
-    let pkmndex = Math.floor((Math.random() * 151) + 1);
+    let pkmndex = Math.floor((Math.random() * 151));
 
+    console.log("post socket pkmnpost");
     client.send(JSON.stringify({
       "event": "PKMNPost",
       "data": {
@@ -145,12 +183,19 @@ function handleBASMessage(message, sender) {
       }
     }));
   }
-
-
-
-
+  else if (false) {}
 
 }
+
+function verifyWebsocket() {
+
+  if (false) {}
+
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+//helper functions
 
 function attemptLogin(message, sender) {
   //console.log(message);
@@ -164,13 +209,13 @@ function attemptLogin(message, sender) {
     body: JSON.stringify(message)
   });
 
-
+  console.log("post server loginattempt");
   fetch(loginRequest)
     .then(response => response.json())
     .then(message => {
 
       //console.log(message);
-      if (message.loggedin) {
+      if (message.event == "loginSuccess") {
         session.loggedin = true;
 
         if (message.data.uuid && message.data.username) {
@@ -181,9 +226,9 @@ function attemptLogin(message, sender) {
         }
 
         //console.log(ports);
-
+        console.log("post BAS loginsuccess");
         ports['BAS'].postMessage({
-          "event": "loginsuccess",
+          "event": "loginSuccess",
           "data": {
             "username": session.username,
             "uuid": session.uuid
@@ -191,10 +236,19 @@ function attemptLogin(message, sender) {
         });
       }
 
+      else {
+        console.log("post BAS loginfailure");
+        ports['BAS'].postMessage({
+          "event": "loginFailure",
+          "data": {
+            "error": message.data.error
+          }
+      });
 
-    });
 
-
+      }
+    }
+  );
 }
 
 function attemptSignup(username, password, email) {
@@ -216,12 +270,13 @@ function attemptSignup(username, password, email) {
     })
   });
 
+  console.log("post server attemptsignup");
   fetch(signupRequest)
     .then(response => response.json())
     .then(message => {
 
       //console.log(message);
-      if (message.event === "signupsuccess") {
+      if (message.event === "signupSuccess") {
         session.loggedin = true;
 
         if (message.data.uuid && message.data.username) {
@@ -230,8 +285,10 @@ function attemptSignup(username, password, email) {
 
         }
 
+        console.log("post BAS signupSuccess");
+
         ports['BAS'].postMessage({
-          "event": "signupsuccess",
+          "event": "signupSuccess",
           "data": {
             "username": session.username,
             "uuid": session.uuid
@@ -241,17 +298,51 @@ function attemptSignup(username, password, email) {
       }
 
       else {
+        console.log("post BAS signupfailure");
+
         ports['BAS'].postMessage({
-          "event": "signupfailure",
+          "event": "signupFailure",
           "data": {
             "error": message.data.error
           }
         });
       }
 
-
-
-
     });
 
+}
+
+function attemptLogout(message, sender) {
+  //console.log(message);
+  const logoutRequest = new Request(`https://localhost:${port}/auth`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    mode: 'cors',
+    cache: 'default',
+    body: JSON.stringify(message)
+  });
+
+  console.log("post server logoutattempt");
+  fetch(logoutRequest)
+    .then(response => response.json())
+    .then(message => {
+      if (message.event === "logoutSuccess") {
+
+        session.loggedin = false;
+        ports['BAS'].postMessage({
+          "event": "logoutSuccess",
+          "data": {          }
+        });
+
+      }
+
+      else {
+
+      }
+
+
+    }
+  );
 }

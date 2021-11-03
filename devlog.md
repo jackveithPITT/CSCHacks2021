@@ -74,3 +74,11 @@ In order to hash the passwords to a sufficient degree, I used the npm package `b
 the majority of my time on this project has simply been going to routing. I have most things figured out for what I need, so for today I focused mostly on getting wires running to and from all the places that need to be connected. For events such as an attempted login or signup, I need to send a message between extension scripts, across the internet to the server, and back again. The program right now is simple however, and allows me to use some less scalable techniques in order to streamline development and cut costs, both in terms of space, computer time, and the 24 hours I get in a day. For example, the way that I am currently using iframes to manage and separate routines and UIs is probably not industry standard past the few frames that I am using in my case. After some time spent routing, login, autologin, signup, and retrieving pokemon data from the database are now fully supported. What should be left is simply updating the database with new user data as Users catch pokemon, as well as logic to track website uniqueness and game currency.
 
  - didnt learn much this time, but something interesting i did find is that data can be sent over websockets in a few different forms, but what is primarily used is a string. we can use the fact that JSON objects can be stringified and decoded on the other side in order to send event objects as one long string to inform the server about what we want.
+
+
+Oct 2
+fixed up the image files and stuff
+modified css for pages, mostly learned about flex box, making decisions about game logic and states
+
+Oct 3
+loading polish, making sessions and login more consistent, standardizing how i send messages from client to server

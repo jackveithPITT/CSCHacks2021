@@ -14,29 +14,13 @@
 }
 
 
-.wrapper {
-  display: flex;
-  justify-content: center;
-  text-align: center;
-}
-
-.authbody {
-  margin: 0rem;
-}
-
-.noborderiframe {
-  border: none;
-  margin: 0px;
-  padding: 0px;
-}
-
 h1 {
   font-weight: bold;
   text-align: center;
   font-family: Inconsolata;
 }
 
-h3 {
+p {
   text-align: center;
   font-family: Inconsolata;
 }
@@ -45,37 +29,25 @@ body {
   color: white;
   background-color: #333333;
 
-
-
 }
 
-form {
+/*////////////////////////////////////////////////////////////////////////////*/
+
+/*GENERAL WRAPPERS*/
+
+.wrapper {
+  display: flex;
+  justify-content: center;
   text-align: center;
 }
 
-
-input[type="username"],input[type="password"], input[type="email"] {
-  margin: .2rem;
-  border: solid black 2px;
-  font-family: Inconsolata;
-  padding: .4rem;
-  background-color: #444444;
-
+.noborderiframe {
+  border: none;
+  margin: 0px;
+  padding: 0px;
 }
 
-input[type="submit"] {
-  margin: .2rem;
-  background-color: #404040;
-  border: solid black 2px;
-  font-family: Inconsolata;
-  font-size: 20px;
-  text-align: center;
-  transition-duration: .5s;
-}
-input[type="submit"]:hover {
-  background-color: white;
-}
-
+/*GENERAL STUFF*/
 button {
   background-color: #606060;
   border: solid black 2px;
@@ -91,24 +63,113 @@ button:hover {
 
 }
 
+/*////////////////////////////////////////////////////////////////////////////*/
+
+/*LOADING SPECIFIC SELECTORS*/
+#LOADINGBODY {
+
+}
+
+#loadingwrapper {
+  display: flex;
+  align-self: center;
+  flex-direction: row;
+  align-content: center;
+  justify-content: center;
+}
+
+#loadingimg {
+  margin: 150%;
+  -webkit-animation: flicking 2s; /* Chrome, Safari, Opera */
+  -webkit-animation-iteration-count: infinite;
+  animation: flicking 2s infinity;
+  animation-iteration-count: infinite;
+}
+
+@-webkit-keyframes flicking {
+  0%   {opacity:1}
+  25%  {opacity:0}
+  50%  {opacity:1}
+  75%  {opacity:0}
+  100% {opacity:1}
+}
+
+/* Standard syntax */
+@keyframes flicking {
+  0%   {opacity:1}
+  25%  {opacity:0}
+  50%  {opacity:1}
+  75%  {opacity:0}
+  100% {opacity:1}
+}
+
+/*////////////////////////////////////////////////////////////////////////////*/
+
+/*GENERAL AUTH SELECTORS*/
+
+.authbody {
+  margin: 0rem;
+}
+
+.authwrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+}
+
+.underlined {
+  text-decoration: underline;
+  color: #B3FFFF;
+  font-family: Inconsolata;
+  cursor: pointer;
+  margin-bottom: 10%;
+}
+
+.submitbutton {
+  margin: .4rem;
+  width: 50%;
+}
+
+.autherror {
+  margin-top: 0;
+  color: #f28080;
+}
+
+.authbottomaligneddiv {
+  position: absolute;
+  width: 100%;
+  bottom: 5%;
+}
+
+form {
+  text-align: center;
+}
+
+
+input[type="username"],input[type="password"], input[type="email"] {
+  margin: .3rem;
+  border: solid black 2px;
+  font-family: Inconsolata;
+  padding: .4rem;
+  background-color: #5a5a5a;
+
+}
+
+/*LOGIN SPECIFIC SELECTORS*/
+#LOGINBODY {
+
+}
+
+/*SIGNUP SPECIFIC SELECTORS*/
 #SIGNUPBODY {
 
 }
 
-.underlined {
-  /* text-decoration: underline; */
-  color: #B3FFFF;
-  font-family: Inconsolata;
-  cursor: pointer;
+/*////////////////////////////////////////////////////////////////////////////*/
 
-}
-
-.bottomaligneddiv {
-  position: absolute;
-  width: 100%;
-  bottom: 0;
-}
-
+/*GENERAL GAME SELECTORS*/
 .gamebutton {
   margin-left: 2%;
   margin-right: 2%;
@@ -117,17 +178,10 @@ button:hover {
   padding-right: 2%;
 }
 
-#signuperror {
-  color: #fc6464;
-}
-
-#boxdiv {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  width: 80%;
-  padding: 0;
-  margin: 0;
+.bottomaligneddiv {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
 }
 
 .gamefont {
@@ -141,4 +195,25 @@ button:hover {
 
 .activebutton:hover {
   background-color: #fcc96a;
+}
+
+/*BOX SPECIFIC SELECTORS*/
+#BOXBODY{
+}
+
+#boxdiv {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  width: 80%;
+  padding: 0;
+  margin: 0;
+}
+
+/*HOME SPECIFIC SELECTORS*/
+#HOMEBODY{
+}
+
+/*CATCH SPECIFIC SELECTORS*/
+#CATCHBODY{
 }
