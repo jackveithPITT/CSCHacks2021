@@ -87,7 +87,7 @@ neat stuff:
 # Nov 2, 2021
 decided to add some more polish to the application, by implementing an intermediate frame that denotes that the client is acquiring resources from the server. makes the GUI look prettier as a whole and prevents Users from seeing flashes of unloaded or yet-to-be-changed content. I also worked to standardize how all scripts send and receive information from each other, making it much easier to add features later on and reducing the complexity of the project as a whole. As a result of this I was able to make sessions and logging in more consistent with less undefined behavior.
 
-#Nov 3, 2021
+# Nov 3, 2021
 today was the final day of the project. I was able to implement a lot of things today, such as adding in the currency that will be used to execute events in game (watts), as well as storing pokemon on the server and generating encounters and whatnot. Funny that I am not programming the bulk of the game logic until actually the last day, most of my time before had simply been spent making the server and extension actually connect correctly. To be fair, you cant play chess without a table (comfortably anyway). Had a bit of trouble trying to make sure that all of the scripts were always synced with each other in terms of what the quantities or positions of certain things were, chiefly being the amount of watts the user holds as well as what pokemon they have captured. I got it sorted out, however, and was able to submit the project in a state that I am actually quite pleased with. Video took way too many takes. I would really love to actively work on this project some more as I believe it has potential, along with the fact that I just want game like this to exist in the first place.
 
 #TLDR: WHATS COOL AND WHAT DID I LEARN?
