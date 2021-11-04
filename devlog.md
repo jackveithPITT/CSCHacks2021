@@ -76,13 +76,21 @@ the majority of my time on this project has simply been going to routing. I have
  - didnt learn much this time, but something interesting i did find is that data can be sent over websockets in a few different forms, but what is primarily used is a string. we can use the fact that JSON objects can be stringified and decoded on the other side in order to send event objects as one long string to inform the server about what we want.
 
 
-Oct 2
-fixed up the image files and stuff
-modified css for pages, mostly learned about flex box, making decisions about game logic and states
+# Nov 1, 2021
+today I had to fix up my image files, standardizing the names so that random unicode characters like the male and female signs do not end up in my filenames. luckily I scraped these images using python because it would be a nightmare to redownload them... Today was mostly about learning all the CSS tricks in order to make my GUI look "dope as hell." I was able to make it so that the game looked how I liked and was still functional as well, making sure elements don't crowd each other and have pretty animations :). I also did a lot of modelling on paper about how I wanted the connections between client and server to act, making sure they were as similar as possible to reduce my headaches later.
 
-Oct 3
-loading polish, making sessions and login more consistent, standardizing how i send messages from client to server
+neat stuff:
+ - flex box and how unresponsive it is
+ - differences between files in windows and unix
+ - CSS animations
 
+# Nov 2, 2021
+decided to add some more polish to the application, by implementing an intermediate frame that denotes that the client is acquiring resources from the server. makes the GUI look prettier as a whole and prevents Users from seeing flashes of unloaded or yet-to-be-changed content. I also worked to standardize how all scripts send and receive information from each other, making it much easier to add features later on and reducing the complexity of the project as a whole. As a result of this I was able to make sessions and logging in more consistent with less undefined behavior.
+
+#Nov 3, 2021
+today was the final day of the project. I was able to implement a lot of things today, such as adding in the currency that will be used to execute events in game (watts), as well as storing pokemon on the server and generating encounters and whatnot. Funny that I am not programming the bulk of the game logic until actually the last day, most of my time before had simply been spent making the server and extension actually connect correctly. To be fair, you cant play chess without a table (comfortably anyway). Had a bit of trouble trying to make sure that all of the scripts were always synced with each other in terms of what the quantities or positions of certain things were, chiefly being the amount of watts the user holds as well as what pokemon they have captured. I got it sorted out, however, and was able to submit the project in a state that I am actually quite pleased with. Video took way too many takes. I would really love to actively work on this project some more as I believe it has potential, along with the fact that I just want game like this to exist in the first place.
+
+#TLDR: WHATS COOL AND WHAT DID I LEARN?
  - firefox extenson structure
  - expressjs web application structure
  - HTTPS/TLS
@@ -104,3 +112,12 @@ loading polish, making sessions and login more consistent, standardizing how i s
  - HTML/CSS and their quirks
  - javascript asynchronous functions and Promises
  - MVC model
+
+ ### Where to next?
+ - polyfills for cross browser support
+ - more sophisticated watt gathering function
+ - area based pokemon encounters
+ - user preferences for GUI
+ - host server for persistent gaming
+ - mash bugs, and most importantly...
+ - MONETIZED CASH SHOP!!!!

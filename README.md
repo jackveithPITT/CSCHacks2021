@@ -1,5 +1,6 @@
 # CSCHacks2021
-my old readme got deleted :)
+THERE IS A LOT MORE INFO IN THE DEVLOG, SPECIFICALLY THE BEGINNING AND END. If your'e at all interested, I advise you check it out :)
+
 - I want to accomplish the creation of an in browser minigame through the use of an extension that mimics the Pokewalker minigame present in the gen IV pokemon titles Heartgold and Soulsilver.
 - I want to do this because I enjoy the minigame (and in theory so do many others), I enjoy and have some experience with the technologies I need to use to make this project, and CSC Hacks has given me an excuse/deadline to make this project that I've been sitting on for a while into something tangible.
 - There are a lot of technologies that I will have to learn about, some that I do not even know I will needto learn yet, but right now some things taht I am looking at are:
