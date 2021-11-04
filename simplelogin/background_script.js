@@ -12,7 +12,7 @@ let session = {
 
 let userpkmn = [];
 
-let urls = {}
+let urls = {};
 
 //TODO: establish websockets only for privileged users
 let client = new WebSocket(`wss://localhost:${WSPort}/test`);
@@ -20,6 +20,29 @@ let client = new WebSocket(`wss://localhost:${WSPort}/test`);
 ////////////////////////////////////////////////////////////////////////////////
 //set up script ports
 browser.runtime.onConnect.addListener(connected);
+
+browser.runtime.onMessage.addListener(function(msg, sender) {
+  let url = sender.url;
+  console.log(url);
+  if (urls[url]) {
+    console.log("url in urls");
+    urls[url] += 1;
+  } else {
+    console.log("not in urls");
+    urls[url] = 1;
+  }
+  if (session.loggedin) {
+    client.send(JSON.stringify({
+      "event": "postCurrency",
+      "data": {
+        "uuid": session.uuid,
+        "currency": "watts",
+        "value": Math.max(10 - urls[url], 1)
+      }
+    }));
+  }
+
+});
 
 function connected (p) {
   if (p.name === "BAS") {
@@ -36,7 +59,6 @@ function wrapper() {
     "msg":"coolgug"
   }));
 }
-
 
 
 ////////////////////////////////////////////////////////////////////////////////

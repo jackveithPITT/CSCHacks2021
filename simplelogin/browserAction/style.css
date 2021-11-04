@@ -204,6 +204,7 @@ input[type="username"],input[type="password"], input[type="email"] {
 .wattp {
   font-family: pkfontDS;
   font-size: 24px;
+  margin: .2rem;
 
 }
 
