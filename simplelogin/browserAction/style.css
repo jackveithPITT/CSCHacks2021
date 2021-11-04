@@ -162,6 +162,10 @@ input[type="username"],input[type="password"], input[type="email"] {
 
 }
 
+#logoutbutton {
+  align-self: flex-end;
+}
+
 /*SIGNUP SPECIFIC SELECTORS*/
 #SIGNUPBODY {
 
@@ -197,6 +201,12 @@ input[type="username"],input[type="password"], input[type="email"] {
   background-color: #fcc96a;
 }
 
+.wattp {
+  font-family: pkfontDS;
+  font-size: 24px;
+
+}
+
 /*BOX SPECIFIC SELECTORS*/
 #BOXBODY{
 }
@@ -216,4 +226,29 @@ input[type="username"],input[type="password"], input[type="email"] {
 
 /*CATCH SPECIFIC SELECTORS*/
 #CATCHBODY{
+}
+
+#catchwrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: space-between;
+  text-align: center;
+  flex-direction: column;
+
+}
+
+#encounterbutton {
+  width: 50%;
+  height: 50%;
+  flex-grow: 5;
+}
+
+.homewrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: space-between;
+  text-align: center;
+  flex-direction: column;
 }

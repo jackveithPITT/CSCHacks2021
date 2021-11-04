@@ -2,6 +2,7 @@
 //connect to BAS for this popup session
 
 let pokemon = [];
+let currency = {};
 
 let uuid = null;
 
@@ -25,12 +26,14 @@ document.addEventListener('DOMContentLoaded', function(event) {
 });
 
 let frames = {
+  loadingFrame: document.querySelector('#loadingFrame'),
   loginFrame:  document.querySelector('#loginFrame'),
   signupFrame: document.querySelector('#signupFrame'),
   homeFrame: document.querySelector('#homeFrame'),
   boxFrame: document.querySelector('#boxFrame'),
-  loadingFrame: document.querySelector('#loadingFrame')
+  catchFrame: document.querySelector("#catchFrame")
 }
+
 let loginFrameDocument = loginFrame.contentWindow.document;
 loginFrame.onload = () => {
 
@@ -43,6 +46,7 @@ loginFrame.onload = () => {
   homeFrameDocument = homeFrame.contentWindow.document;
   boxFrameDocument = boxFrame.contentWindow.document;
   loadingFrameDocument = loadingFrame.contentWindow.document;
+  catchFrameDocument = catchFrame.contentWindow.document;
 
 
   //////////////////////////////////////////////////////////////////////////////
@@ -109,14 +113,15 @@ loginFrame.onload = () => {
   });
 
   homeFrameDocument.querySelector(".catchbutton").addEventListener('click', function (event) {
+    swapFrames(catchFrame, homeFrame);
+  });
+
+  homeFrameDocument.querySelector("#logoutbutton").addEventListener('click', function (event) {
+    swapFrames(loadingFrame, homeFrame);
     BASPort.postMessage({
-      "event": "PKMNEncounter",
-      "data": {
-
-      }
+      "event": "logout",
+      "data": {}
     });
-
-
 
   });
 
@@ -128,17 +133,30 @@ loginFrame.onload = () => {
   });
 
   boxFrameDocument.querySelector(".catchbutton").addEventListener('click', function (event) {
-    swapFrames(loadingFrame, boxFrame);
-
-    BASPort.postMessage({
-      "event": "logout",
-      "data": {}
-    });
+    swapFrames(catchFrame, boxFrame);
 
   });
 
   //////////////////////////////////////////////////////////////////////////////
   //CATCHFRAME
+  catchFrameDocument.querySelector(".homebutton").addEventListener('click', function (event) {
+    swapFrames(homeFrame, catchFrame);
+
+  });
+
+  catchFrameDocument.querySelector(".boxbutton").addEventListener('click', function (event) {
+    swapFrames(boxFrame, catchFrame);
+
+  });
+  catchFrameDocument.querySelector("#encounterbutton").addEventListener('click', function (event) {
+    BASPort.postMessage({
+      "event": "postEncounterPayment",
+      "data": {
+        "currency": "watts",
+        "value": -100
+      }
+    });
+  });
 
 
 };
@@ -161,10 +179,12 @@ function handleBSMessage(message, sender) {
     homeFrameDocument.querySelector("#homeusername").textContent = username;
 
     BASPort.postMessage({
-      event: "PKMNAccess",
-      data: {
+      "event": "PKMNAccess",
+      "data": {
       }
     });
+
+
 
     //swapFrames(homeFrame, loginFrame);
   }
@@ -207,7 +227,6 @@ function handleBSMessage(message, sender) {
 
   else if (ev === "PKMNAccessSuccess") {
     pokemon = message.data.pokemon;
-    console.log("hi :)");
 
     for (let i = 0; i < Math.min(pokemon.length, 16); i++) {
       let srcstring = "./images/" + filterPokemonName(pokemon[i].name) + "-icon.png";
@@ -217,7 +236,12 @@ function handleBSMessage(message, sender) {
     let homepokemonsrc = "./images/" + filterPokemonName(pokemon[0].name) + ".png";
     homeFrameDocument.querySelector("#homepokemon").src = homepokemonsrc;
 
-    swapFrames(homeFrame, loadingFrame);
+    BASPort.postMessage({
+      "event": "getCurrency",
+      "data": {
+      }
+    });
+
   }
 
   else if (ev === "PKMNPostSuccess") {
@@ -226,6 +250,17 @@ function handleBSMessage(message, sender) {
     for (let i = 0; i < Math.min(pokemon.length, 16); i++) {
       let srcstring = "./images/" + filterPokemonName(pokemon[i].name) + "-icon.png";
       boxFrameDocument.querySelector(`#box${i}`).src = srcstring;
+    }
+    catchFrameDocument.querySelector("#catchpkmnimg").src = `./images/${filterPokemonName(pokemon[pokemon.length - 1].name)}.png`;
+
+  }
+
+  else if (ev === "getCurrencySuccess") {
+    currency = message.data.currency;
+    homeFrameDocument.querySelector(".wattp").textContent = currency.watts + "w";
+    catchFrameDocument.querySelector(".wattp").textContent = currency.watts + "w";
+    if (catchFrame.hidden) {
+      swapFrames(homeFrame, loadingFrame);
     }
   }
 

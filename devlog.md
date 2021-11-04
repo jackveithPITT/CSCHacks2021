@@ -82,3 +82,25 @@ modified css for pages, mostly learned about flex box, making decisions about ga
 
 Oct 3
 loading polish, making sessions and login more consistent, standardizing how i send messages from client to server
+
+ - firefox extenson structure
+ - expressjs web application structure
+ - HTTPS/TLS
+ - HTTPS Headers
+ - internet communication standards (CORS, etc.)
+ - server routing
+ - websockets
+ - Secure Sockets Layer
+ - sessions/cookies
+ - mySQL (ended up scrapping)
+ - mongoDB
+ - how to actually use git like a real human
+ - credential transfer and storage
+ - encryption and Hashing
+ - session stores
+ - python web scraping
+ - firefox extension messaging API
+ - client-server model
+ - HTML/CSS and their quirks
+ - javascript asynchronous functions and Promises
+ - MVC model

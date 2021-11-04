@@ -12,6 +12,8 @@ let session = {
 
 let userpkmn = [];
 
+let urls = {}
+
 //TODO: establish websockets only for privileged users
 let client = new WebSocket(`wss://localhost:${WSPort}/test`);
 
@@ -79,6 +81,44 @@ client.addEventListener('message', message => {
         "pokemon": userpkmn
       }
     });
+
+    client.send(JSON.stringify({
+      "event":"PKMNAccess",
+      "data": {
+        "uuid": session.uuid
+      }
+    }));
+
+
+  }
+
+  else if (msg.event === "getCurrencySuccess") {
+    ports['BAS'].postMessage({
+      "event": "getCurrencySuccess",
+      "data": {
+        "currency": msg.data.currency
+      }
+    });
+  }
+
+  else if (msg.event === "postEncounterPaymentSuccess") {
+    let pkmndex = Math.floor((Math.random() * 151));
+
+    console.log("post socket pkmnpost");
+    client.send(JSON.stringify({
+      "event": "PKMNPost",
+      "data": {
+        "uuid": session.uuid,
+        "pokemon": pkmndex
+      }
+    }));
+/*
+    client.send(JSON.stringify({
+      "event": "getCurrency",
+      "data": {
+        "uuid": session.uuid
+      }
+    }));*/
   }
 
 
@@ -183,7 +223,36 @@ function handleBASMessage(message, sender) {
       }
     }));
   }
-  else if (false) {}
+  else if (ev === "getCurrency") {
+    client.send(JSON.stringify({
+      "event": "getCurrency",
+      "data": {
+        "uuid": session.uuid
+      }
+    }));
+  }
+
+  else if (ev === "postCurrency") {
+    client.send(JSON.stringify({
+      "event": "postCurrency",
+      "data": {
+        "uuid": session.uuid,
+        "currency": message.data.currency,
+        "value": message.data.value
+      }
+    }));
+  }
+
+  else if (ev === "postEncounterPayment") {
+    client.send(JSON.stringify({
+      "event": "postEncounterPayment",
+      "data": {
+        "uuid": session.uuid,
+        "currency": message.data.currency,
+        "value": message.data.value
+      }
+    }));
+  }
 
 }
 

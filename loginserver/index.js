@@ -256,6 +256,70 @@ async function postPKMNtoUUID(uuid, pokemon) {
   }
 }
 
+async function postCurrency(uuid, currency, value) {
+  let userObject = null;
+  let retval = true;
+  try {
+      await mclient.connect();
+      console.log("Connected correctly to server to post currency data");
+
+      let db = mclient.db("userData");
+      let curr = db.collection("currency");
+
+      let query =  { "uuid": uuid };
+      let options = {"projection": { "_id": 0, "uuid": 0 }};
+
+      let userObject = await curr.findOne(query, options);
+      console.log(userObject);
+
+      if (currency === "watts") {
+        userObject.watts += value;
+        if (!(userObject.watts < 0)) {
+          let newvalues = {"$set": {"watts": userObject.watts}};
+          await curr.updateOne(query, newvalues);
+
+        }
+        else {
+          retval = false;
+        }
+      }
+
+
+  } catch (err) {
+      console.log(err.stack);
+  }
+  finally {
+      await mclient.close();
+      return retval;
+  }
+}
+
+async function getCurrency(uuid) {
+    let currency = null;
+
+    try {
+        await mclient.connect();
+        console.log("Connected correctly to server for get currency");
+
+        let db = mclient.db("userData");
+        let curr = db.collection("currency");
+
+        let query =  { "uuid": uuid };
+        let options = {"projection": { "_id": 0, "uuid": 0 }};
+        currency = await curr.findOne(query, options);
+        console.log(currency);
+
+
+    } catch (err) {
+        console.log(err.stack);
+    }
+    finally {
+        await mclient.close();
+        console.log(currency);
+        return currency;
+    }
+}
+
 
 //WEBSOCKETS
 const wss = new WebSocket.Server({ server: server });
@@ -308,6 +372,58 @@ wss.on('connection', function connection(ws) {
         }));
       }
 
+    }
+
+    else if (message.event === "getCurrency") {
+      console.log("getCurrency");
+      let curr = await getCurrency(message.data.uuid);
+      console.log(curr);
+      ws.send(JSON.stringify({
+        "event": "getCurrencySuccess",
+        "data": {
+          "currency": curr
+        }
+      }));
+
+    }
+
+    else if (message.event === "postCurrency") {
+      console.log("postCurrency");
+      if (await postCurrency(message.data.uuid, message.data.currency, message.data.value)) {
+        ws.send(JSON.stringify({
+          "event": "postCurrencySuccess",
+          "data": {
+
+          }
+        }));
+      }
+      else {
+        ws.send(JSON.stringify({
+          "event": "postCurrencyFailure",
+          "data": {
+
+          }
+        }));
+      }
+    }
+
+    else if (message.event === "postEncounterPayment") {
+      if (await postCurrency(message.data.uuid, message.data.currency, message.data.value)) {
+        ws.send(JSON.stringify({
+          "event": "postEncounterPaymentSuccess",
+          "data": {
+
+          }
+        }));
+      }
+      else {
+        ws.send(JSON.stringify({
+          "event": "postEncounterPaymentFailure",
+          "data": {
+
+          }
+        }));
+      }
     }
 
 
